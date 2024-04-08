@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="indexcss.css"/>
+    <title>Roomchat</title>
+    <script src="indexjs.js"></script>
+</head>
+<body>
+<label class="title">Roomchat</label>
+
+
+<div class="popup">
+    <div class="popupwindow">
+        <div class="verticallayout">
+            <label class="title" style="font-size: 25px">New room</label>
+            <div class="horizontallayout">
+                <label style="padding-right: 40px">Chat name:</label>
+                <input id="roomname" type="text" placeholder="name">
+            </div>
+            <div class="horizontallayout" style="margin-top: 20px">
+                <label style="padding-right: 17px">Max members:</label>
+                <input id="maxnum" type="number" min="1" value="1">
+            </div>
+            <button type="button" class="submitbut" onclick="createroom()">Submit</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="verticallayout">
+    <div id="roomdiv">
+    </div>
+    <button class="button" type="button" onclick="openpopup()">+</button>
+</div>
+</body>
+</html>
+<!--aa                      example ヽ(゜▽゜　)－                 -->
+<!--<fieldset class="forfieldset" onclick="openroom()">-->
+<!--    <label>Chatname</label>-->
+<!--    <label style="position: absolute; right: 5px">0/10</label>-->
+<!--</fieldset>-->
