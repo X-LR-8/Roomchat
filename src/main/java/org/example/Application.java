@@ -1,4 +1,4 @@
-package org.example.Tomcat;
+package org.example;
 
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.WebResourceRoot;
@@ -24,7 +24,7 @@ public class Application {
 
         File additionWebInfClasses = new File("build/classes");
         WebResourceRoot resources = new StandardRoot(ctx);
-        resources.addPreResources(new DirResourceSet(resources, "/webapp/WEB-INF/classes", additionWebInfClasses.getAbsolutePath(), "/"));
+        resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes", additionWebInfClasses.getAbsolutePath(), "/"));
         ctx.setResources(resources);
 
         tomcat.start();

@@ -23,7 +23,6 @@ public class Roomservlet extends HttpServlet {
         List<Room> list=database.read();
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(list);
-        list.forEach(System.out::println);
         resp.getWriter().write(json);
     }
 
@@ -33,7 +32,6 @@ public class Roomservlet extends HttpServlet {
         String roomname=req.getParameter("roomname");
         int maxmemb=Integer.parseInt(req.getParameter("maxmemb"));
         database=Database.getInstance();
-        System.out.println(roomname+" "+maxmemb);
         Room room=new Room(roomname,maxmemb);
         database.write(room);
     }
