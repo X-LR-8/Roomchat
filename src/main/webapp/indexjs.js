@@ -38,8 +38,9 @@ async function createfieldsets(rooms) {
         members.style.right = "5px";
         fieldset.appendChild(members);
         fieldset.onclick=function (){
-            var modifiedname=encodeURIComponent(item.name)
-            window.open("chatroom.html?roomname="+modifiedname);
+            var modifiedname=encodeURIComponent(item.name);
+            var modifiedmaxmemb=encodeURIComponent(item.maxmemb);
+            window.open("chatroom.html?roomname="+modifiedname+"&maxmemb="+modifiedmaxmemb);
         }
         roomdiv.appendChild(fieldset);
     });

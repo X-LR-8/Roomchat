@@ -7,6 +7,9 @@ import org.example.Addclasses.Room;
 import org.example.Addclasses.UserRec;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,11 +17,7 @@ import java.util.Map;
 
 @ServerEndpoint("/chat")
 public class Chatendpoint {
-    private static final Map<String, Session> sessions=new HashMap<>();// sessionid and session
-    private static final Map<String, String> roommap=new HashMap<>();// sessionid and roomname
-    private static final List<String> room=new ArrayList<>();//roonnames
     private static final List<UserRec> userList = new ArrayList<>();//for usernames with its sesions
-    private static int onlinememb=0;
     private void sendmessage(String message, Session session, Boolean close){
         String temproomname="";
         for (int k=0; k<userList.size(); k++){
@@ -42,13 +41,6 @@ public class Chatendpoint {
                 throw new RuntimeException(e);
             }
         });
-//        sessions.forEach((key, value) ->{
-//            try {
-//                value.getBasicRemote().sendText(message);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        });
     }
     @OnOpen
     public void onOpen(Session session){
@@ -60,17 +52,29 @@ public class Chatendpoint {
         UserRec userRec = new UserRec();
         if(temp[0].equalsIgnoreCase("nameandroomname")){
             String[] temp2=temp[1].split("\n");
+            int tempmaxmemb=Integer.parseInt(temp2[2]);
             userRec.setName(temp2[0]);
             userRec.setRoomname(temp2[1]);
             userRec.setSession(session);
-            userList.add(userRec);
-            int roommembers=0;
+            int roommembers=1;
             for(int i=0; i<userList.size(); i++){
                 if(userRec.getRoomname().equals(userList.get(i).getRoomname())){
                     roommembers++;
                 }
             }
-            sendmessage(userRec.getName()+" has joined the chat"+"\n"+roommembers,session,false);
+            if(roommembers<=tempmaxmemb){
+                userList.add(userRec);
+                Instant instant = Instant.ofEpochMilli(Instant.now().toEpochMilli());
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+                String date = formatter.format(instant.atZone(ZoneId.systemDefault()));
+                sendmessage("["+date+"] "+userRec.getName()+" has joined the chat"+"\n"+roommembers,session,false);
+            }else{
+                try {
+                    session.getBasicRemote().sendText("status404");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }else if(temp[0].equalsIgnoreCase("chatText")){
             String tempname="";
             for(int i=0; i<userList.size(); i++){
@@ -78,7 +82,10 @@ public class Chatendpoint {
                     tempname=userList.get(i).getName();
                 }
             }
-            sendmessage(tempname+": "+temp[1], session,false);
+            Instant instant = Instant.ofEpochMilli(Instant.now().toEpochMilli());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            String date = formatter.format(instant.atZone(ZoneId.systemDefault()));
+            sendmessage("["+date+"] "+tempname+": "+temp[1], session,false);
         }
     }
     @OnClose
@@ -97,6 +104,9 @@ public class Chatendpoint {
                 roommembers++;
             }
         }
-        sendmessage(tempname+" has left the chat"+"\n"+(roommembers-1),session,true);
+        Instant instant = Instant.ofEpochMilli(Instant.now().toEpochMilli());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        String date = formatter.format(instant.atZone(ZoneId.systemDefault()));
+        sendmessage("["+date+"] "+tempname+" has left the chat"+"\n"+(roommembers-1),session,true);
     }
 }
